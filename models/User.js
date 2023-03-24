@@ -37,6 +37,15 @@ const UserSchema = new mongoose.Schema(
                 ref: "Account",
             },
         ],
+        totalCash: {
+            type: Number,
+            default: 0,
+        },
+        totalCredit: {
+            type: Number,
+            min: [0, "Total credit should be positive only"],
+            default: 0,
+        },
     },
 
     {
