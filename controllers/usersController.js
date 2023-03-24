@@ -7,7 +7,9 @@ import Account from "../models/Account.js";
 // @route   GET /api/v1/users
 // @access  Public
 export const getUsers = asyncHandler(async (req, res, next) => {
-    const users = await User.find();
+    const users = await User.find().populate({
+        path: "accounts",
+    });
     res.status(200).json({ data: users });
 });
 
@@ -41,7 +43,7 @@ export const getUser = asyncHandler(async (req, res, next) => {
 
     if (!user) {
         return next(
-            new Error(`User that end with '${req.params.id.slice(-6)}' not found`)
+            new Error(`User with id enging ...'${req.params.id.slice(-6)}' not found`)
         );
     }
 
@@ -79,7 +81,7 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     if (!user) {
         return next(
             new ErrorResponse(
-                `User that ends with '${req.params.id.slice(-6)}' was not found`,
+                `User with id ending ...'${req.params.id.slice(-6)}' was not found`,
                 404
             )
         );
