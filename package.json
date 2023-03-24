@@ -1,0 +1,43 @@
+{
+    "name": "bank-fullstack-mern-app",
+    "version": "1.0.0",
+    "description": "fullstack React.js Express.js Bank application with MongoDB",
+    "type": "module",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "server": "node --watch server.js",
+        "client": "npm run dev --prefix client",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mbukh/Appleseeds-Bank-Fullstack-MERN-App.git"
+    },
+    "keywords": [
+        "bank",
+        "MERN",
+        "fullstack",
+        "mongodb",
+        "mongoose",
+        "react",
+        "reactjs",
+        "expressjs"
+    ],
+    "author": "Moshe Bukhman",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/mbukh/Appleseeds-Bank-Fullstack-MERN-App/issues"
+    },
+    "homepage": "https://github.com/mbukh/Appleseeds-Bank-Fullstack-MERN-App#readme",
+    "devDependencies": {
+        "colors": "^1.4.0",
+        "concurrently": "^7.6.0"
+    },
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "mongoose": "^7.0.3",
+        "morgan": "^1.10.0"
+    }
+}

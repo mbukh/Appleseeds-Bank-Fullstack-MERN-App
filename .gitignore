@@ -1,5 +1,5 @@
 # Dependencies
-/node_modules
+node_modules
 
 # Build/Production
 /client/build
@@ -9,7 +9,7 @@
 !*.env.example
 
 # Logs
-/logs
+logs
 *.log
 
 # Editor specific
