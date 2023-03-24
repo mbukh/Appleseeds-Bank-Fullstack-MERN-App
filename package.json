@@ -6,7 +6,7 @@
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
-        "server": "node --watch server.js",
+        "server": "nodemon server.js",
         "client": "npm run dev --prefix client",
         "dev": "concurrently \"npm run server\" \"npm run client\""
     },
@@ -31,10 +31,11 @@
     },
     "homepage": "https://github.com/mbukh/Appleseeds-Bank-Fullstack-MERN-App#readme",
     "devDependencies": {
-        "colors": "^1.4.0",
-        "concurrently": "^7.6.0"
+        "concurrently": "^7.6.0",
+        "nodemon": "^2.0.22"
     },
     "dependencies": {
+        "colors": "^1.4.0",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
         "mongoose": "^7.0.3",
