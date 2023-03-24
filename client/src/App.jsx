@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import axios from "axios";
 
 function App() {
     const [people, setPeople] = useState([]);
@@ -7,9 +8,10 @@ function App() {
     useEffect(() => {
         const fetchPeople = async () => {
             try {
-                const response = await fetch("/api/people");
-                const data = await response.json();
-                setPeople(data);
+                const response = await axios("/api/v1/users");
+                const { data } = response;
+                console.log(data.data);
+                setPeople(data.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -17,13 +19,18 @@ function App() {
         fetchPeople();
     }, []);
 
+    console.log(people);
+
     return (
         <div className="App">
             <h1>List of People</h1>
             <ul>
-                {people.map((person) => (
-                    <li key={person.id}>{person.name}</li>
-                ))}
+                {people.length > 0 &&
+                    people.map((person) => (
+                        <li key={person.id}>
+                            {person.name}: {person.passportId} : {person.totalCash}
+                        </li>
+                    ))}
             </ul>
         </div>
     );

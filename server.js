@@ -25,7 +25,7 @@ app.use(express.json());
 app.use("/api/v1/accounts", accounts);
 app.use("/api/v1/users", users);
 
-app.use("/", express.static("public"));
+app.use("/", express.static("client/dist"));
 
 app.use(errorHandler);
 
