@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import colors from 'colors';
+import cors from "cors"
 import morgan from 'morgan';
+import colors from 'colors';
 
 import accounts from './routes/accountsRoutes.js';
 import users from './routes/usersRoutes.js';
@@ -16,6 +17,8 @@ connectDB();
 
 const app = express();
 
+// CORS cross-domain access
+app.use(cors());
 // Body parser middleware
 app.use(express.json());
 

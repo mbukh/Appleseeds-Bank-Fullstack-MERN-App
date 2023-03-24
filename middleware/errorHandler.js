@@ -10,15 +10,15 @@ const errorHandler = (error, req, res, next) => {
 
     // Mongoose bad ObjectId
     if (error.name === "CastError") {
-        const message = `Resource not found with id ending ...${error.value.slice(
+        const message = `Resource not found with id ending ...${new String(error.value).slice(
             -6
-        )} was not found`;
+        )} not found`;
         err = new ErrorResponse(message, 404);
     }
 
     // Mongoose duplicate key
     if (error.code === 11000) {
-        const field_value = err.message.match(/\{(.*)\}/gi);
+        const field_value = err.message.match(/\{(.*)\}/g)[0].replaceAll('"', "");
         const message = `Duplicate data ${field_value}`;
         err = new ErrorResponse(message, 400);
     }

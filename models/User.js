@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
     {
-        passportID: {
+        passportId: {
             type: String,
-            required: [true, "Please Insert your ID"],
+            required: [true, "Please Insert your passportId"],
             trim: true,
-            length: [9, "passportID must contain 9 Chars"],
-            match: [/^\d{9}$/, "passportID must consist digits only"],
+            length: [9, "passportId must contain 9 Chars"],
+            match: [/^\d{9}$/, "passportId must consist digits only"],
             unique: true,
         },
         name: {
@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema(
         },
         totalCredit: {
             type: Number,
-            min: [0, "Total credit should be positive only"],
+            min: [0, "Total credit must not be a negative number"],
             default: 0,
         },
     },
@@ -51,19 +51,19 @@ const UserSchema = new mongoose.Schema(
     {
         timestamps: true,
         toJSON: {
-            virtuals: true,
+            // virtuals: true,
             // Hide the _id and the __v field from the frontend
             transform: function (_, ret) {
                 ret.id = ret._id;
-                // delete ret._id;
+                delete ret._id;
                 delete ret.__v;
             },
         },
         toObject: {
-            virtuals: true,
+            // virtuals: true,
             // Hide the _id and the __v field from the frontend
             transform: function (_, ret) {
-                ret.id = ret._id;
+                // ret.id = ret._id;
                 // delete ret._id;
                 delete ret.__v;
             },

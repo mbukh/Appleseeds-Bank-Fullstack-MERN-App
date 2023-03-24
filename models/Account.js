@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 const AccountSchema = new mongoose.Schema(
     {
         owner: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: "User",
-            required: [true, "Account Must Have An Owner!"],
+            required: [true, "Account must have an owner"],
         },
         credit: {
             type: Number,
-            min: [0, "Must have money in credit"],
+            min: [0, "Account credit must not be a negative number"],
             default: 0,
         },
         cash: {
@@ -21,19 +21,19 @@ const AccountSchema = new mongoose.Schema(
     {
         timestamps: true,
         toJSON: {
-            virtuals: true,
+            // virtuals: true,
             // Hide the _id and the __v field from the frontend
             transform: function (_, ret) {
                 ret.id = ret._id;
-                // delete ret._id;
+                delete ret._id;
                 delete ret.__v;
             },
         },
         toObject: {
-            virtuals: true,
+            // virtuals: true,
             // Hide the _id and the __v field from the frontend
             transform: function (_, ret) {
-                ret.id = ret._id;
+                // ret.id = ret._id;
                 // delete ret._id;
                 delete ret.__v;
             },
@@ -42,14 +42,12 @@ const AccountSchema = new mongoose.Schema(
 );
 
 // Static method to get the user total balance
-AccountSchema.statics.getTotalBalance = async function (ownerId) {
+AccountSchema.statics.updateUserBalance = async function (ownerId) {
     const aggregationArr = await this.aggregate([
         {
-            // $match stage filters documents to only include those with a matching ownerId
             $match: { owner: ownerId },
         },
         {
-            // $group stage groups the documents by the owner field and calculates the sum of balances
             $group: {
                 _id: "$owner",
                 totalCash: { $sum: "$cash" },
@@ -58,17 +56,24 @@ AccountSchema.statics.getTotalBalance = async function (ownerId) {
         },
     ]);
 
-    const totalCash = aggregationArr[0].totalCash;
-    const totalCredit = aggregationArr[0].totalCredit;
-    try {
-        await this.model("User").findByIdAndUpdate(ownerId, {
+    const { totalCash, totalCredit } = aggregationArr[0];
+
+    const user = await this.model("User").findByIdAndUpdate(
+        ownerId,
+        {
             totalCash: totalCash,
             totalCredit: totalCredit,
-        });
-    } catch (err) {
-        console.error(err);
-        throw new Error("Error updating user total balance");
+        },
+        { new: true }
+    );
+    if (!user) {
+        throw new ErrorResponse(
+            `Balance update failed for a user with id ending ...${ownerId.sliced(-6)} `,
+            404
+        );
     }
+
+    return user;
 };
 
 export default mongoose.model("Account", AccountSchema);

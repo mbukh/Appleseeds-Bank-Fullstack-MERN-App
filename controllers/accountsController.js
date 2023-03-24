@@ -3,10 +3,39 @@ import ErrorResponse from "../utils/ErrorResponse.js";
 import Account from "../models/Account.js";
 import User from "../models/User.js";
 
-// @desc    Get all Accounts
-// @route   GET /api/v1/Accounts
+// @desc    Get Accounts + Query
+// @route   GET /api/v1/accounts
+// @access Public
 export const getAccounts = asyncHandler(async (req, res, next) => {
-    const accounts = await Account.find();
+    const {
+        passportId,
+        minCash = null,
+        maxCash = null,
+        minCredit = null,
+        maxCredit = null,
+    } = req.body;
+
+    let query = {};
+    if (passportId) {
+        const user = await User.findOne({ passportId });
+        if (!user) {
+            throw new ErrorResponse(
+                `No accounts found for passportId ${passportId}`,
+                404
+            );
+        }
+        query.owner = user.id;
+    }
+    if (minCash !== null) query.cash = { $gte: minCash };
+    if (maxCash !== null) query.cash = { ...query.cash, $lte: maxCash };
+    if (minCredit !== null) query.credit = { $gte: minCredit };
+    if (maxCredit !== null) query.credit = { ...query.credit, $lte: maxCredit };
+
+    const accounts = await Account.find(query);
+
+    if (!accounts || accounts.length === 0) {
+        throw new ErrorResponse(`No accounts found matching search criteria`, 404);
+    }
 
     res.status(200).json({
         success: true,
@@ -14,60 +43,111 @@ export const getAccounts = asyncHandler(async (req, res, next) => {
     });
 });
 
-// @desc    Create a Account
-// @route   POST /api/v1/Accounts
+// @desc    Create Account
+// @route   POST /api/v1/accounts
+// @access Public
 export const createAccount = asyncHandler(async (req, res, next) => {
-    const { passportID } = req.body;
+    const { passportId } = req.body;
 
-    let user = await User.findOne({ passportID });
+    let user = await User.findOne({ passportId });
     if (!user) {
-        return next(
-            new ErrorResponse(
-                `Account with passportID '${passportID}' was not found`,
-                404
-            )
-        );
+        throw new ErrorResponse(`Account with passportId '${passportId}' not found`, 404);
     }
 
-    const account = await Account.create({ owner: user._id });
+    const account = await Account.create({ owner: user.id });
 
     user = await User.findByIdAndUpdate(
-        user._id,
+        user.id,
         {
-            $push: { accounts: account._id },
+            $push: { accounts: account.id },
         },
         { new: true }
     );
     res.status(200).json({
         success: true,
-        data: `Account with id ending ...${account.id.slice(-6)} was added successfully`,
+        data: `Account with id ending ...${account.id.slice(
+            -6
+        )} was added successfully to user with passportId ${user.passportId}`,
+    });
+});
+
+// @desc    Get Account By Id
+// @route   GET /api/v1/accounts/:id
+// @access Public
+export const getAccount = asyncHandler(async (req, res, next) => {
+    const account = await Account.findById(req.params.id);
+    if (!account) {
+        throw new ErrorResponse(
+            `Account with id ending ...'${req.params.id.slice(-6)}' not found`,
+            404
+        );
+    }
+
+    res.status(200).json({
+        success: true,
+        data: account,
+    });
+});
+
+// @desc    update a account cash
+// @route   PUT /api/v1/accounts/:id
+// @access Public
+export const updateBalance = asyncHandler(async (req, res, next) => {
+    const { credit = 0, cash = 0 } = req.body;
+
+    let account = await Account.findById(req.params.id);
+    if (!account) {
+        new ErrorResponse(
+            `Owner of an account with id ending ...'${req.params.id.slice(
+                -6
+            )}' not found`,
+            404
+        );
+    }
+    const { cash: prevCash, credit: prevCredit } = account;
+
+    // runValidators will not work with $inc
+    account = await Account.findByIdAndUpdate(
+        account.id,
+        { credit: prevCredit + credit, cash: prevCash + cash },
+        { new: true, runValidators: true }
+    );
+    if (!account) {
+        throw new ErrorResponse(
+            `Account with id ending ...'${req.params.id.slice(-6)}' not found`,
+            404
+        );
+    }
+
+    await Account.updateUserBalance(account.owner);
+
+    res.status(200).json({
+        success: true,
+        data: `Balance was Changed`,
     });
 });
 
 // @desc    Delete a account
 // @route   DELETE /api/v1/accounts/:id
+// @access Public
 export const deleteAccount = asyncHandler(async (req, res, next) => {
-    const accountID = req.params;
+    const accountID = req.params.id;
 
     const account = await Account.findById(accountID);
     if (!account) {
-        return next(
-            new ErrorResponse(
-                `Account that ends with '${accountID.slice(-6)}' was not found`,
-                404
-            )
+        throw new ErrorResponse(
+            `Account that ends with '${accountID.slice(-6)}' not found`,
+            404
         );
     }
 
     let user = await User.findById(account.owner);
     if (user.accounts.length === 1) {
-        return next(
-            new ErrorResponse(
-                `Account with id ending ...'${accountID.slice(
-                    -6
-                )}' cannot be deleted because it is the last user's account`,
-                403
-            )
+        throw new ErrorResponse(
+            `Account with id ending ...'${accountID.slice(
+                -6
+            )}' cannot be deleted because it is the last user's account`,
+            403
         );
     }
 
@@ -79,80 +159,12 @@ export const deleteAccount = asyncHandler(async (req, res, next) => {
 
     await account.deleteOne(); // delete the account document
 
-    await Account.getTotalBalance(account.owner);
+    await Account.updateUserBalance(account.owner);
 
     res.status(200).json({
         success: true,
         data: `Account with id ending ...'${accountID.slice(
             -6
         )}' was deleted successfully`,
-    });
-});
-
-// @desc    get a account
-// @route   GET /api/v1/accounts/:id
-export const getAccount = asyncHandler(async (req, res, next) => {
-    const account = await Account.findById(req.params.id);
-    if (!account) {
-        return next(
-            new ErrorResponse(
-                `Account with id ending ...'${req.params.id.slice(-6)}' was not found`,
-                404
-            )
-        );
-    }
-
-    res.status(200).json({
-        success: true,
-        data: account,
-    });
-});
-
-// @desc    update a account cash
-// @route   GET /api/v1/accounts/updateBalance/:id
-export const updateBalance = asyncHandler(async (req, res, next) => {
-    const accountId = req.params.id;
-    const { credit = 0, cash = 0 } = req.body;
-
-    const { credit: prevCredit, cash: prevCash } = await Account.findById(accountId);
-    if (!prevCredit || !prevCash) {
-        new ErrorResponse(`Account that ends with '${accountId}' was not found`, 404);
-    }
-
-    // runValidators will not work with $inc
-    const account = await Account.findOneAndUpdate(
-        { _id: accountId },
-        { credit: credit + prevCredit, cash: cash + prevCash },
-        { new: true, runValidators: true }
-    );
-    if (!account) {
-        return next(
-            new ErrorResponse(`Account that ends with '${accountId}' was not found`, 404)
-        );
-    }
-
-    await Account.getTotalBalance(account.owner);
-
-    res.status(200).json({
-        success: true,
-        data: `Balance was Changed`,
-    });
-});
-
-// @desc    get a account by query
-// @route   GET /api/v1/accounts/GetAccountByQuery
-export const getAccountByQuery = asyncHandler(async (req, res, next) => {
-    const query = req.query;
-    if (!query.hasOwnProperty("email") && !query.hasOwnProperty("accountID")) {
-        return next(new ErrorResponse("Params can only be Email/accountID", 401));
-    }
-    const account = await Account.find(query);
-    if (!account) {
-        return next(new ErrorResponse(`Account with this params was not found`, 404));
-    }
-
-    res.status(200).json({
-        success: true,
-        data: account,
     });
 });
