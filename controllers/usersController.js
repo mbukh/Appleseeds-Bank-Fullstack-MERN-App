@@ -37,7 +37,7 @@ export const createUser = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/users/:id
 // @access  Public
 export const getUser = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate({ path: "accounts" });
 
     if (!user) {
         return next(
