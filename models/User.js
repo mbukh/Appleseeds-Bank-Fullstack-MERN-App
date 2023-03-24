@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
     {
-        userID: {
+        passportID: {
             type: String,
             required: [true, "Please Insert your ID"],
             trim: true,
-            length: [9, "userID must contain 9 Chars"],
-            match: [/^\d{9}$/, "userID must consist digits only"],
+            length: [9, "passportID must contain 9 Chars"],
+            match: [/^\d{9}$/, "passportID must consist digits only"],
             unique: true,
         },
         name: {

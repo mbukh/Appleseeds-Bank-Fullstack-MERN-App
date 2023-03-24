@@ -56,8 +56,8 @@ export const getUser = asyncHandler(async (req, res, next) => {
 //@access
 export const getUserByQuery = asyncHandler(async (req, res, next) => {
     const query = req.query;
-    if (!query.hasOwnProperty("email") && !query.hasOwnProperty("userID")) {
-        return next(new ErrorResponse("Params can only be Email/userID"), 401);
+    if (!query.hasOwnProperty("email") && !query.hasOwnProperty("passportID")) {
+        return next(new ErrorResponse("Params can only be Email/passportID"), 401);
     }
     const user = await User.find(query);
     if (!user) {
