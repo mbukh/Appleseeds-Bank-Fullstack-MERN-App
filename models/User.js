@@ -6,8 +6,8 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: [true, "Please Insert your passportId"],
             trim: true,
-            length: [9, "passportId must contain 9 Chars"],
-            match: [/^\d{9}$/, "passportId must consist digits only"],
+            match: [/^[0-9a-z]{8,12}$/gi, "Must consist at least 8-12 letters or digits"],
+            uppercase: true,
             unique: true,
         },
         name: {
@@ -45,6 +45,10 @@ const UserSchema = new mongoose.Schema(
             type: Number,
             min: [0, "Total credit must not be a negative number"],
             default: 0,
+        },
+        active: {
+            type: Boolean,
+            default: true,
         },
     },
 
