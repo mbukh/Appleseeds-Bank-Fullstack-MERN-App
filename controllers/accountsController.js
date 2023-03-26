@@ -13,7 +13,7 @@ export const getAccounts = asyncHandler(async (req, res, next) => {
         maxCash = null,
         minCredit = null,
         maxCredit = null,
-    } = req.body;
+    } = { ...req.query, ...req.body };
 
     let query = {};
     if (passportId) {
