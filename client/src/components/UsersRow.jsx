@@ -1,18 +1,18 @@
 import { useState } from "react";
 
 import { userFields as fields } from "../constants/fields";
-import { parseDate } from "../utils/utils";
+import { renderValue } from "../utils/utils";
 
 import * as api from "../service/api";
 
-import SubTable from "./SubTable";
+import AccountsTable from "./AccountsTable";
 
 import { Switch, IconButton, TableCell, TableRow, Fab } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 
-const Row = ({ data }) => {
+const UsersRow = ({ data }) => {
     const [open, setOpen] = useState(false);
     const [active, setActive] = useState(data.active);
     const [removed, setRemoved] = useState(false);
@@ -63,19 +63,20 @@ const Row = ({ data }) => {
                     ([key, value]) =>
                         value.render && (
                             <TableCell key={key} align={value.align}>
-                                {key === "createdAt" ? parseDate(data[key]) : data[key]}
+                                {renderValue(data, key)}
                             </TableCell>
                         )
                 )}
             </TableRow>
 
             <TableRow>
-                <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={9}>
-                    <SubTable data={data.accounts} open={open && active} />
+                <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} />
+                <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={8}>
+                    <AccountsTable data={data.accounts} open={open && active} />
                 </TableCell>
             </TableRow>
         </>
     );
 };
 
-export default Row;
+export default UsersRow;

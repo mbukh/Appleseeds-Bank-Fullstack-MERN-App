@@ -1,5 +1,6 @@
 import { accountFields as fields } from "../constants/fields";
-import { renderValue } from "../utils/utils";
+
+import AccountsRow from "./AccountsRow";
 
 import {
     Box,
@@ -12,7 +13,7 @@ import {
     Typography,
 } from "@mui/material";
 
-const SubTable = ({ data, open }) => {
+const AccountsTable = ({ data, open }) => {
     return (
         data &&
         data.length && (
@@ -33,13 +34,7 @@ const SubTable = ({ data, open }) => {
                         </TableHead>
                         <TableBody>
                             {data.map((entry) => (
-                                <TableRow key={entry.id}>
-                                    {Object.entries(fields).map(([key, value]) => (
-                                        <TableCell align={value.align} key={key}>
-                                            {renderValue(entry, key)}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
+                                <AccountsRow key={entry.id} data={entry} />
                             ))}
                         </TableBody>
                     </Table>
@@ -49,4 +44,4 @@ const SubTable = ({ data, open }) => {
     );
 };
 
-export default SubTable;
+export default AccountsTable;

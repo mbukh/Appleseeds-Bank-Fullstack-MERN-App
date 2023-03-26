@@ -4,7 +4,7 @@ import "./App.css";
 
 import * as api from "./service/api";
 
-import CollapsibleTable from "./components/Table";
+import UsersTable from "./components/UsersTable";
 
 function App() {
     const [data, setData] = useState([]);
@@ -19,7 +19,7 @@ function App() {
         fetchData();
     }, [query]);
 
-    return <CollapsibleTable rows={data} query={query} setQuery={setQuery} />;
+    return <UsersTable rows={data} query={query} setQuery={setQuery} />;
 }
 
 export default App;

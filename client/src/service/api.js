@@ -3,7 +3,7 @@ import axios from "axios";
 import { debug } from "../constants/debug";
 
 const api = axios.create({
-    baseURL: "/api/v1",
+    baseURL: "/api/v1/",
     headers: { "Content-Type": "application/json" },
 });
 
@@ -48,4 +48,19 @@ export const updateUser = async (id, query) => {
 
 export const deleteUser = async (id, query) => {
     return await responseHandler(async () => await api.delete("/users/" + String(id)));
+};
+
+export const updateAccountBalance = async (id, query) => {
+    return await responseHandler(
+        async () => await api.put("/accounts/" + String(id), query)
+    );
+};
+
+export const deleteAccount = async (id, query) => {
+    return await responseHandler(async () => await api.delete("/accounts/" + String(id)));
+};
+
+export const createTransaction = async (senderId, receiverId, amount) => {
+    const query = { senderId, receiverId, amount };
+    return await responseHandler(async () => await api.put("/transaction/", query));
 };

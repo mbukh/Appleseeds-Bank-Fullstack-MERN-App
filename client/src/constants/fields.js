@@ -83,6 +83,13 @@ export const userFields = {
 };
 
 export const accountFields = {
+    details: {
+        title: "Details",
+        align: "center",
+        render: false,
+        type: "boolean",
+        searchable: false,
+    },
     id: {
         title: "Account ID",
         align: "right",

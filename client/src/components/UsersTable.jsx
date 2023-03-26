@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import { userFields as fields } from "../constants/fields";
 
-import Row from "./Row";
 import SearchRow from "./SearchRow";
+import UsersRow from "./UsersRow";
 import AddUserRow from "./AddUserRow";
 
 import Loading from "./Loading/Loading";
@@ -18,7 +18,7 @@ import {
     Paper,
 } from "@mui/material";
 
-export default function CollapsibleTable({ rows, query, setQuery }) {
+const UsersTable = ({ rows, query, setQuery }) => {
     const [newUsers, setNewUsers] = useState([]);
 
     const renderNewUser = (data) => {
@@ -40,7 +40,7 @@ export default function CollapsibleTable({ rows, query, setQuery }) {
                 <TableBody>
                     <SearchRow query={query} setQuery={setQuery} />
                     {rows.length ? (
-                        rows.map((entry) => <Row key={entry.id} data={entry} />)
+                        rows.map((entry) => <UsersRow key={entry.id} data={entry} />)
                     ) : (
                         <TableRow>
                             <TableCell colSpan={9}>
@@ -50,11 +50,13 @@ export default function CollapsibleTable({ rows, query, setQuery }) {
                         </TableRow>
                     )}
                     {newUsers.map((entry) => (
-                        <Row key={entry.id} data={entry} />
+                        <UsersRow key={entry.id} data={entry} />
                     ))}
                     <AddUserRow renderNewUser={renderNewUser} />
                 </TableBody>
             </Table>
         </TableContainer>
     );
-}
+};
+
+export default UsersTable;
