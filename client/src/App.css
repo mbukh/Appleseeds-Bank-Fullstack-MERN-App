@@ -2,3 +2,7 @@
     --white-color: #333;
     --secondary-color: #aaa;
 }
+
+body {
+    background: #ddd;
+}

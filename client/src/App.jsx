@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 
-import "./App.css";
-
 import * as api from "./service/api";
-
 import UsersTable from "./components/UsersTable";
+
+import "./App.css";
 
 function App() {
     const [data, setData] = useState([]);

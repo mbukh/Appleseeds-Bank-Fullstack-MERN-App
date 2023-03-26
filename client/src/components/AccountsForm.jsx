@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import * as api from "../service/api";
-import { userFields as fields } from "../constants/fields";
+import { accountFields as fields } from "../constants/fields";
 
 import {
     Box,
@@ -30,6 +30,27 @@ const AccountsForm = ({}) => {
                 gap: 2,
             }}
         >
+            {Object.entries(fields)
+                .filter(([_, value]) => value.register)
+                .map(([key, value]) => (
+                    <TextField
+                        key={key}
+                        style={{ flex: value.short ? 2 : 4 }}
+                        required
+                        type={value.type}
+                        label={value.title}
+                        value={user[key] || ""}
+                        onChange={(e) =>
+                            setUser((prev) => ({
+                                ...prev,
+                                [key]: e.target.value,
+                            }))
+                        }
+                        variant="outlined"
+                        size="small"
+                    />
+                ))}
+
             <TextField
                 style={{ flex: true ? 2 : 4 }}
                 required

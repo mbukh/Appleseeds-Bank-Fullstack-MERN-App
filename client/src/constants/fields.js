@@ -96,6 +96,7 @@ export const accountFields = {
         render: true,
         type: "text",
         searchable: true,
+        actions: [{ key: "transaction", title: "Create Transaction" }],
     },
     cash: {
         title: "Cash",
@@ -107,6 +108,10 @@ export const accountFields = {
             { key: "minCash", title: "Min Cash" },
             { key: "maxCash", title: "Max Cash" },
         ],
+        actions: [
+            { key: "withdrawCash", title: "Withdraw Cash" },
+            { key: "updateCash", title: "Deposit Cash" },
+        ],
     },
     credit: {
         title: "Credit",
@@ -117,6 +122,10 @@ export const accountFields = {
         searchedBy: [
             { key: "minCredit", title: "Min Credit" },
             { key: "maxCredit", title: "Max Credit" },
+        ],
+        actions: [
+            { key: "withdrawCredit", title: "Withdraw Credit" },
+            { key: "updateCredit", title: "Deposit Credit" },
         ],
     },
     createdAt: {
