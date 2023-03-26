@@ -1,39 +1,24 @@
 import { useState, useEffect } from "react";
+
 import "./App.css";
-import axios from "axios";
+
+import * as api from "./service/api";
+
+import CollapsibleTable from "./components/Table";
+import Loading from "./components/Loading/Loading";
 
 function App() {
-    const [people, setPeople] = useState([]);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        const fetchPeople = async () => {
-            try {
-                const response = await axios("/api/v1/users");
-                const { data } = response;
-                console.log(data.data);
-                setPeople(data.data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
+        const fetchData = async () => {
+            const { success, data } = await api.getUsers();
+            if (success) setData(data);
         };
-        fetchPeople();
+        fetchData();
     }, []);
 
-    console.log(people);
-
-    return (
-        <div className="App">
-            <h1>List of People</h1>
-            <ul>
-                {people.length > 0 &&
-                    people.map((person) => (
-                        <li key={person.id}>
-                            {person.name}: {person.passportId} : {person.totalCash}
-                        </li>
-                    ))}
-            </ul>
-        </div>
-    );
+    return data.length ? <CollapsibleTable rows={data} /> : <Loading />;
 }
 
 export default App;
