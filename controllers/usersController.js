@@ -7,15 +7,20 @@ import Account from "../models/Account.js";
 //@route GET /api/v1/users
 //@access Public
 export const getUsers = asyncHandler(async (req, res, next) => {
-    const { email, passportId, minCash = null, maxCash = null } = req.body;
+    const { name, email, passportId, minCash, maxCash, active } = {
+        ...req.query,
+        ...req.body,
+    };
 
     let query = {};
-    if (passportId) query.passportId = passportId;
-    if (email) query.email = email;
-    if (minCash !== null) query.totalCash = { $gte: minCash };
-    if (maxCash !== null) query.totalCash = { ...query.totalCash, $lte: maxCash };
+    if (passportId) query.passportId = new RegExp("^" + passportId + "$", "i");
+    if (name) query.name = new RegExp("^" + name + "$", "i");
+    if (email) query.email = new RegExp("^" + email + "$", "i");
+    if (minCash !== undefined) query.totalCash = { $gte: minCash };
+    if (maxCash !== undefined) query.totalCash = { ...query.totalCash, $lte: maxCash };
+    if (active !== undefined) query.active = active;
 
-    const users = await User.find(query);
+    const users = await User.find(query).populate({ path: "accounts" });
     if (!users || users.length === 0) {
         throw new ErrorResponse(`No users found matching search criteria`, 404);
     }
@@ -40,11 +45,35 @@ export const createUser = asyncHandler(async (req, res, next) => {
             $push: { accounts: account.id },
         },
         { new: true }
-    );
+    ).populate({ path: "accounts" });
 
     res.status(200).json({
         success: true,
-        data: { user, account },
+        data: user,
+    });
+});
+
+// @desc    Update a User
+// @route   PUT /api/v1/users/:id
+// @access  Public
+export const updateUser = asyncHandler(async (req, res, next) => {
+    const { active, name, age, passportId, email } = req.body;
+
+    let query = {};
+    if (active !== undefined) query.active = active;
+    if (name !== undefined) query.name = name;
+    if (age !== undefined) query.age = age;
+    if (passportId !== undefined) query.passportId = passportId;
+    if (email !== undefined) query.email = email;
+
+    const user = await User.findByIdAndUpdate(req.params.id, query, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(200).json({
+        success: true,
+        data: user,
     });
 });
 
