@@ -3,7 +3,10 @@ import { useState } from "react";
 import { userFields as fields } from "../constants/fields";
 
 import Row from "./Row";
+import SearchRow from "./SearchRow";
 import AddUserRow from "./AddUserRow";
+
+import Loading from "./Loading/Loading";
 
 import {
     Table,
@@ -15,7 +18,7 @@ import {
     Paper,
 } from "@mui/material";
 
-export default function CollapsibleTable({ rows }) {
+export default function CollapsibleTable({ rows, query, setQuery }) {
     const [newUsers, setNewUsers] = useState([]);
 
     const renderNewUser = (data) => {
@@ -35,9 +38,17 @@ export default function CollapsibleTable({ rows }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((entry) => (
-                        <Row key={entry.id} data={entry} />
-                    ))}
+                    <SearchRow query={query} setQuery={setQuery} />
+                    {rows.length ? (
+                        rows.map((entry) => <Row key={entry.id} data={entry} />)
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={9}>
+                                Check your search criteria
+                                <Loading />
+                            </TableCell>
+                        </TableRow>
+                    )}
                     {newUsers.map((entry) => (
                         <Row key={entry.id} data={entry} />
                     ))}

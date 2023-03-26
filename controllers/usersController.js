@@ -7,17 +7,37 @@ import Account from "../models/Account.js";
 //@route GET /api/v1/users
 //@access Public
 export const getUsers = asyncHandler(async (req, res, next) => {
-    const { name, email, passportId, minCash, maxCash, active } = {
+    Object.entries(req.query).forEach(
+        ([key, value]) => value === "" && delete req.query[key]
+    );
+
+    const {
+        name,
+        email,
+        minAge,
+        maxAge,
+        passportId,
+        minCash,
+        maxCash,
+        minCredit,
+        maxCredit,
+        active,
+    } = {
         ...req.query,
         ...req.body,
     };
 
     let query = {};
-    if (passportId) query.passportId = new RegExp("^" + passportId + "$", "i");
-    if (name) query.name = new RegExp("^" + name + "$", "i");
-    if (email) query.email = new RegExp("^" + email + "$", "i");
+    if (passportId) query.passportId = new RegExp(passportId, "i");
+    if (name) query.name = new RegExp(name, "i");
+    if (email) query.email = new RegExp(email, "i");
+    if (minAge !== undefined) query.age = { $gte: minAge };
+    if (maxAge !== undefined) query.age = { ...query.age, $lte: maxAge };
     if (minCash !== undefined) query.totalCash = { $gte: minCash };
     if (maxCash !== undefined) query.totalCash = { ...query.totalCash, $lte: maxCash };
+    if (minCredit !== undefined) query.totalCredit = { $gte: minCredit };
+    if (maxCredit !== undefined)
+        query.totalCredit = { ...query.totalCredit, $lte: maxCredit };
     if (active !== undefined) query.active = active;
 
     const users = await User.find(query).populate({ path: "accounts" });

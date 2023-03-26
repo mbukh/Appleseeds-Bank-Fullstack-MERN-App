@@ -2,16 +2,7 @@ import { useState } from "react";
 
 import AddUserForm from "./AddUserForm";
 
-import {
-    Box,
-    Collapse,
-    Fab,
-    Table,
-    TableBody,
-    TableCell,
-    TableRow,
-    Typography,
-} from "@mui/material";
+import { Box, Collapse, Fab, TableCell, TableRow, Typography } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const AddUserRow = ({ renderNewUser }) => {
@@ -33,18 +24,12 @@ const AddUserRow = ({ renderNewUser }) => {
                                     {error}
                                 </Typography>
                             )}
-                            <Table size="medium" aria-label="accounts">
-                                <TableBody>
-                                    <TableRow>
-                                        <AddUserForm
-                                            user={user}
-                                            setUser={setUser}
-                                            setError={setError}
-                                            renderNewUser={renderNewUser}
-                                        />
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
+                            <AddUserForm
+                                user={user}
+                                setUser={setUser}
+                                setError={setError}
+                                renderNewUser={renderNewUser}
+                            />
                         </Box>
                     </Collapse>
                 </TableCell>

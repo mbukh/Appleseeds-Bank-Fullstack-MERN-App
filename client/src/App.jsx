@@ -5,20 +5,21 @@ import "./App.css";
 import * as api from "./service/api";
 
 import CollapsibleTable from "./components/Table";
-import Loading from "./components/Loading/Loading";
 
 function App() {
     const [data, setData] = useState([]);
+    const [query, setQuery] = useState({});
 
     useEffect(() => {
+        setData([]);
         const fetchData = async () => {
-            const { success, data } = await api.getUsers();
+            const { success, data } = await api.getUsers(query);
             if (success) setData(data);
         };
         fetchData();
-    }, []);
+    }, [query]);
 
-    return data.length ? <CollapsibleTable rows={data} /> : <Loading />;
+    return <CollapsibleTable rows={data} query={query} setQuery={setQuery} />;
 }
 
 export default App;

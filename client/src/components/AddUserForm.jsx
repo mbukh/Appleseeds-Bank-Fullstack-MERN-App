@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as api from "../service/api";
 import { userFields as fields } from "../constants/fields";
 
-import { TableCell, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
@@ -22,34 +22,33 @@ const AddUserForm = ({ user, setUser, setError, renderNewUser }) => {
     };
 
     return (
-        <>
+        <Box
+            sx={{
+                display: "flex",
+                gap: 2,
+            }}
+        >
             {Object.entries(fields)
                 .filter(([_, value]) => value.register)
                 .map(([key, value]) => (
-                    <TableCell
-                        sx={{ border: "none" }}
+                    <TextField
                         key={key}
-                        align={value.align}
-                        colSpan={value.short ? 1 : 2}
-                        width={value.short ? "15%" : "25%"}
-                    >
-                        <TextField
-                            required
-                            type={value.type}
-                            label={value.title}
-                            value={user[key] || ""}
-                            onChange={(e) =>
-                                setUser((prev) => ({
-                                    ...prev,
-                                    [key]: e.target.value,
-                                }))
-                            }
-                            variant="outlined"
-                            size="small"
-                        />
-                    </TableCell>
+                        style={{ flex: value.short ? 2 : 4 }}
+                        required
+                        type={value.type}
+                        label={value.title}
+                        value={user[key] || ""}
+                        onChange={(e) =>
+                            setUser((prev) => ({
+                                ...prev,
+                                [key]: e.target.value,
+                            }))
+                        }
+                        variant="outlined"
+                        size="small"
+                    />
                 ))}
-            <TableCell align="right" sx={{ borderBottom: "none" }}>
+            <div>
                 <LoadingButton
                     color="success"
                     onClick={addUserHandler}
@@ -60,8 +59,8 @@ const AddUserForm = ({ user, setUser, setError, renderNewUser }) => {
                 >
                     <span>Add&nbsp;User</span>
                 </LoadingButton>
-            </TableCell>
-        </>
+            </div>
+        </Box>
     );
 };
 

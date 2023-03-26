@@ -1,12 +1,25 @@
 export const userFields = {
-    details: { title: "Details", align: "center", render: false, type: "boolean" },
-    active: { title: "Active Status", align: "center", render: false, type: "boolean" },
+    details: {
+        title: "Details",
+        align: "center",
+        render: false,
+        type: "boolean",
+        searchable: false,
+    },
+    active: {
+        title: "Active Status",
+        align: "center",
+        render: false,
+        type: "boolean",
+        searchable: true,
+    },
     name: {
         title: "User Name",
         align: "left",
         render: true,
         register: true,
         type: "text",
+        searchable: true,
     },
     age: {
         title: "Age",
@@ -15,6 +28,11 @@ export const userFields = {
         register: true,
         short: true,
         type: "number",
+        searchable: true,
+        searchedBy: [
+            { key: "minAge", title: "Min Age" },
+            { key: "maxAge", title: "Max Age" },
+        ],
     },
     passportId: {
         title: "Passport ID",
@@ -23,6 +41,7 @@ export const userFields = {
         register: true,
         short: true,
         type: "text",
+        searchable: true,
     },
     email: {
         title: "Email",
@@ -30,21 +49,81 @@ export const userFields = {
         render: true,
         register: true,
         type: "email",
+        searchable: true,
     },
-    totalCash: { title: "Total Cash", align: "right", render: true, type: "number" },
-    totalCredit: { title: "Total Credit", align: "right", render: true, type: "number" },
-    createdAt: { title: "Registration Date", align: "right", render: true, type: "number" },
+    totalCash: {
+        title: "Total Cash",
+        align: "right",
+        render: true,
+        type: "number",
+        searchable: true,
+        searchedBy: [
+            { key: "minCash", title: "Min Cash" },
+            { key: "maxCash", title: "Max Cash" },
+        ],
+    },
+    totalCredit: {
+        title: "Total Credit",
+        align: "right",
+        render: true,
+        type: "number",
+        searchable: true,
+        searchedBy: [
+            { key: "minCredit", title: "Min Credit" },
+            { key: "maxCredit", title: "Max Credit" },
+        ],
+    },
+    createdAt: {
+        title: "Registration Date",
+        align: "right",
+        render: true,
+        type: "number",
+        searchable: false,
+    },
 };
 
 export const accountFields = {
-    id: { title: "Account ID", align: "right", render: true, type: "text" },
-    cash: { title: "Cash", align: "right", render: true, type: "number" },
-    credit: { title: "Credit", align: "right", render: true, type: "number" },
+    id: {
+        title: "Account ID",
+        align: "right",
+        render: true,
+        type: "text",
+        searchable: true,
+    },
+    cash: {
+        title: "Cash",
+        align: "right",
+        render: true,
+        type: "number",
+        searchable: true,
+        searchedBy: [
+            { key: "minCash", title: "Min Cash" },
+            { key: "maxCash", title: "Max Cash" },
+        ],
+    },
+    credit: {
+        title: "Credit",
+        align: "right",
+        render: true,
+        type: "number",
+        searchable: true,
+        searchedBy: [
+            { key: "minCredit", title: "Min Credit" },
+            { key: "maxCredit", title: "Max Credit" },
+        ],
+    },
     createdAt: {
         title: "Account Opening Date",
         align: "right",
         render: true,
         type: "date",
+        searchable: false,
     },
-    updatedAt: { title: "Last Transaction", align: "right", render: true, type: "date" },
+    updatedAt: {
+        title: "Last Transaction",
+        align: "right",
+        render: true,
+        type: "date",
+        searchable: false,
+    },
 };
