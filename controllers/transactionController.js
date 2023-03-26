@@ -10,9 +10,9 @@ import Account from "../models/Account.js";
 export const createTransaction = asyncHandler(async (req, res, next) => {
     const { sender, receiver, amount } = req.body;
 
-    if (!sender || !receiver || !amount) {
+    if (!sender || !receiver || !amount || amount < 0) {
         throw new ErrorResponse(
-            `Sender, receiver and amount are mandatory to make a transaction`,
+            `Sender, receiver and a non-negative amount are mandatory to make a transaction`,
             400
         );
     }
@@ -53,6 +53,9 @@ export const createTransaction = asyncHandler(async (req, res, next) => {
             { new: true }
         )
     );
+
+    await Account.updateUserBalance(senderAccount.owner);
+    await Account.updateUserBalance(receiverAccount.owner);
 
     res.status(200).json({
         success: true,
