@@ -95,19 +95,26 @@ export const accountFields = {
         align: "right",
         render: true,
         type: "text",
-        searchable: true,
-        actions: [{ key: "transaction", title: "Create Transaction" }],
+        actions: [
+            {
+                key: "userSearch",
+                title: "Search User (Passport ID or Email)",
+                hideButton: "true",
+            },
+            {
+                key: "accountId",
+                title: "Choose Account",
+                hideButton: "true",
+                type: "autocomplete",
+            },
+            { key: "transaction", title: "Send Amount" },
+        ],
     },
     cash: {
         title: "Cash",
         align: "right",
         render: true,
         type: "number",
-        searchable: true,
-        searchedBy: [
-            { key: "minCash", title: "Min Cash" },
-            { key: "maxCash", title: "Max Cash" },
-        ],
         actions: [
             { key: "withdrawCash", title: "Withdraw Cash" },
             { key: "updateCash", title: "Deposit Cash" },
@@ -118,14 +125,9 @@ export const accountFields = {
         align: "right",
         render: true,
         type: "number",
-        searchable: true,
-        searchedBy: [
-            { key: "minCredit", title: "Min Credit" },
-            { key: "maxCredit", title: "Max Credit" },
-        ],
         actions: [
-            { key: "withdrawCredit", title: "Withdraw Credit" },
-            { key: "updateCredit", title: "Deposit Credit" },
+            { key: "withdrawCredit", title: "Increase Credit" },
+            { key: "updateCredit", title: "Decrease Credit" },
         ],
     },
     createdAt: {
@@ -133,13 +135,11 @@ export const accountFields = {
         align: "right",
         render: true,
         type: "date",
-        searchable: false,
     },
     updatedAt: {
         title: "Last Transaction",
         align: "right",
         render: true,
         type: "date",
-        searchable: false,
     },
 };
