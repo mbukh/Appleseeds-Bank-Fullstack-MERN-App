@@ -28,9 +28,9 @@ export const getUsers = asyncHandler(async (req, res, next) => {
     };
 
     let query = {};
-    if (passportId) query.passportId = new RegExp(passportId, "i");
+    if (passportId) query.passportId = passportId.toUpperCase();
     if (name) query.name = new RegExp(name, "i");
-    if (email) query.email = new RegExp(email, "i");
+    if (email) query.email = email.toLowerCase();
     if (minAge !== undefined) query.age = { $gte: minAge };
     if (maxAge !== undefined) query.age = { ...query.age, $lte: maxAge };
     if (minCash !== undefined) query.totalCash = { $gte: minCash };
