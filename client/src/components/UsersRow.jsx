@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { userFields as fields } from "../constants/fields";
-import { renderValue } from "../utils/utils";
+import { formatDisplayValue } from "../utils/utils";
 
 import * as api from "../service/api";
 
@@ -63,7 +63,7 @@ const UsersRow = ({ data }) => {
                     ([key, value]) =>
                         value.render && (
                             <TableCell key={key} align={value.align}>
-                                {renderValue(data, key)}
+                                {formatDisplayValue(data, key)}
                             </TableCell>
                         )
                 )}

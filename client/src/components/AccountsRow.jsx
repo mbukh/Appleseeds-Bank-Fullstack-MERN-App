@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { accountFields as fields } from "../constants/fields";
-import { renderValue } from "../utils/utils";
+import { formatDisplayValue } from "../utils/utils";
 
 import AccountsForm from "./AccountsForm";
 
@@ -39,22 +39,15 @@ const AccountsRow = ({ data }) => {
                     ([key, value]) =>
                         value.render && (
                             <TableCell align={value.align} key={key}>
-                                {renderValue(data, key)}
+                                {formatDisplayValue(data, key)}
                             </TableCell>
                         )
                 )}
             </TableRow>
             <TableRow>
-                <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} />
-                <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={7}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 2 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Account Actions
-                            </Typography>
-                            <AccountsForm />
-                        </Box>
-                    </Collapse>
+                {/* <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} /> */}
+                <TableCell style={{ paddingTop: 0, paddingBottom: 0 }} colSpan={6}>
+                    <AccountsForm open={open} />
                 </TableCell>
             </TableRow>
         </>
