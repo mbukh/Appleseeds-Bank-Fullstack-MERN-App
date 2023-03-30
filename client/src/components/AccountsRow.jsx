@@ -37,7 +37,7 @@ const AccountsRow = ({ data }) => {
                 </TableCell>
                 {Object.entries(fields).map(
                     ([key, value]) =>
-                        value.render && (
+                        value.display && (
                             <TableCell align={value.align} key={key}>
                                 {formatDisplayValue(data, key)}
                             </TableCell>

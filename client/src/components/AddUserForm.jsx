@@ -29,7 +29,7 @@ const AddUserForm = ({ user, setUser, setError, renderNewUser }) => {
             }}
         >
             {Object.entries(fields)
-                .filter(([_, value]) => value.register)
+                .filter(([_, value]) => value.registerFormDisplay)
                 .map(([key, value]) => (
                     <TextField
                         key={key}

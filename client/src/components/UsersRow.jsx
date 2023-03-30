@@ -61,7 +61,7 @@ const UsersRow = ({ data }) => {
                 </TableCell>
                 {Object.entries(fields).map(
                     ([key, value]) =>
-                        value.render && (
+                        value.display && (
                             <TableCell key={key} align={value.align}>
                                 {formatDisplayValue(data, key)}
                             </TableCell>

@@ -1,98 +1,176 @@
-import { useState } from "react";
+import { useReducer, useRef, useState } from "react";
 
 import * as api from "../service/api";
 import { accountFields as fields } from "../constants/fields";
 
 import {
     Box,
+    Collapse,
     FormControl,
     FormHelperText,
     InputLabel,
     MenuItem,
     Select,
+    Table,
+    TableCell,
+    TableHead,
+    TableRow,
     TextField,
+    Typography,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
-const AccountsForm = ({}) => {
+const reducer = (state, payload) => {
+    switch (type) {
+        case "setTransactionUser":
+
+        case "setTransactionAccount":
+
+        case "setTransactionAmount":
+
+        case "setWithdrawCash":
+
+        case "setWithdrawCashAmount":
+
+        case "setDepositCashAmount":
+
+        case "setIncreaseCreditAmount":
+
+        case "setDecreaseCreditAmount":
+
+        case "transaction":
+            // api.
+            return { count: state.count + 1 };
+
+        case "withdrawCash":
+            // api.
+            return { count: state.count + 1 };
+
+        case "depositCash":
+            // api.
+            // api.
+            return { count: state.count + 1 };
+
+        case "increaseCredit":
+            // api.
+            return { count: state.count + 1 };
+
+        case "decreaseCredit":
+            // api.
+            return { count: state.count + 1 };
+
+        default:
+            return state;
+    }
+};
+
+const AccountsForm = ({ open }) => {
+    const [query, dispatch] = useReducer(reducer, {});
     const [loading, setLoading] = useState(false);
-    const [receiverId, setReceiverId] = useState("");
+    const timeout = useRef(null);
+
+    const inputHandler = (value, key, type) => {
+        clearTimeout(timeout.current);
+        setQuery((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+
+        timeout.current = setTimeout(
+            () =>
+                setQuery({
+                    ...query,
+                    [key]: value,
+                }),
+            1000
+        );
+    };
 
     const handleChange = (event) => {
         setReceiverId(event.target.value);
     };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                gap: 2,
-            }}
-        >
-            {Object.entries(fields)
-                .filter(([_, value]) => value.register)
-                .map(([key, value]) => (
-                    <TextField
-                        key={key}
-                        style={{ flex: value.short ? 2 : 4 }}
-                        required
-                        type={value.type}
-                        label={value.title}
-                        value={user[key] || ""}
-                        onChange={(e) =>
-                            setUser((prev) => ({
-                                ...prev,
-                                [key]: e.target.value,
-                            }))
-                        }
-                        variant="outlined"
-                        size="small"
-                    />
-                ))}
-
-            <TextField
-                style={{ flex: true ? 2 : 4 }}
-                required
-                type=""
-                label=""
-                value=""
-                onChange={(e) => {}}
-                variant="outlined"
-                size="small"
-            />
-
-            <FormControl required sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="receiver-account">Age</InputLabel>
-                <Select
-                    labelId="receiver-account"
-                    value={receiverId}
-                    label="Age *"
-                    onChange={handleChange}
-                >
-                    <MenuItem value="">
-                        <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText>Required</FormHelperText>
-            </FormControl>
-
-            <div>
-                <LoadingButton
-                    color="success"
-                    onClick={() => {}}
-                    loading={loading}
-                    loadingPosition="start"
-                    startIcon={<CurrencyExchangeIcon />}
-                    variant="contained"
-                >
-                    <span>Send money</span>
-                </LoadingButton>
-            </div>
-        </Box>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 2 }}>
+                <Typography variant="h6" gutterBottom component="div">
+                    Account Actions
+                </Typography>
+                <Table size="medium" aria-label="accounts">
+                    <TableHead>
+                        <TableRow>
+                            {Object.entries(fields)
+                                .filter(([_, value]) => value.actions)
+                                .map(([key, value]) => (
+                                    <TableCell key={key} align={value.align}>
+                                        {value.actions.map((action) => (
+                                            <Box
+                                                key={action.key}
+                                                mb={1}
+                                                sx={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    gap: 1,
+                                                }}
+                                            >
+                                                <TextField
+                                                    type="search"
+                                                    label={action.title}
+                                                    value={query[action.key] || ""}
+                                                    onChange={(e) =>
+                                                        inputHandler(
+                                                            e.target.value,
+                                                            action.key,
+                                                            value.type
+                                                        )
+                                                    }
+                                                    variant="standard"
+                                                    size="small"
+                                                    inputProps={{
+                                                        style: { fontSize: "80%" },
+                                                        inputMode: "numeric",
+                                                        pattern: "[0-9]*",
+                                                        min: 0,
+                                                    }}
+                                                    InputLabelProps={{
+                                                        style: { fontSize: "80%" },
+                                                    }}
+                                                    fullWidth
+                                                />
+                                                {!action.hideButton && (
+                                                    <LoadingButton
+                                                        color="primary"
+                                                        onClick={() =>
+                                                            dispatch(action.key)
+                                                        }
+                                                        loading={loading}
+                                                        loadingPosition="start"
+                                                        startIcon={
+                                                            <CurrencyExchangeIcon />
+                                                        }
+                                                        variant="contained"
+                                                        size="small"
+                                                        fullWidth
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                fontSize: "80%",
+                                                            }}
+                                                        >
+                                                            {action.title.split(" ")[0]}
+                                                        </span>
+                                                    </LoadingButton>
+                                                )}
+                                            </Box>
+                                        ))}
+                                    </TableCell>
+                                ))}
+                        </TableRow>
+                    </TableHead>
+                </Table>
+            </Box>
+        </Collapse>
     );
 };
 
